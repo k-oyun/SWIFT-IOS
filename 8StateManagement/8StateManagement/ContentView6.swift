@@ -12,9 +12,26 @@ class UserSettings: ObservableObject {
 }
 
 struct ContentView6: View {
-    
+    var body: some View {
+        VStack{
+            Child1()
+            Child2()
+        }
+    }
+}
+
+struct Child1: View {
     @EnvironmentObject var settings: UserSettings
-    
+    var body: some View {
+        Text("사용자 : \(settings.userName)")
+        Button("username 변경") {
+            settings.userName = "오윤"
+        }
+    }
+}
+
+struct Child2: View {
+    @EnvironmentObject var settings: UserSettings
     var body: some View {
         Text("사용자 : \(settings.userName)")
         Button("username 변경") {
