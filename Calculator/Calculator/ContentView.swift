@@ -30,7 +30,14 @@ struct ContentView: View {
             display = ""
             clear()
         case "=" :
-            calculate()
+            let result = calculate()
+            
+            if let result = result {
+                display.append(result)
+            }
+            else {
+                print("형 변환이 제대로 되지 않았거나, 0으로 나누었습니다.")
+            }
             clear()
         case "+", "-", "*", "/" :
             display.append(contentsOf: String(char))
@@ -53,25 +60,34 @@ struct ContentView: View {
         operatorSign = ""
     }
     
-    func calculate() {
-        let a: Int = Int(inputA)!
-        let b: Int = Int(inputB)!
+    func calculate() -> String? {
+        let a: Int? = Int(inputA)
+        let b: Int? = Int(inputB)
         var result: Int = 0
+        
+        // 함수 안에서는 guard-let을 통한 옵셔널 바인딩을 한다.
+        guard let a = a, let b = b else {
+            print("정수형으로 반환되지 않습니다.")
+            return nil
+        }
         
         switch operatorSign {
         case "+" :
             result = a + b
         case "-" :
-            result = a + b
+            result = a - b
         case "*" :
-            result = a + b
+            result = a * b
         case "/" :
-            result = a + b
+            if b==0 {
+                return nil
+            }
+            result = a / b
         default:
             print("???")
         }
-        
-        display.append("=\(result)")
+        return "=\(result)"
+//        display.append("=\(result)")
         
     }
 
