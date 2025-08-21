@@ -130,3 +130,54 @@ print("mutableReference.mutableProperty: \(mutableReference.mutableProperty)")
 let immutableReference: Sample2 = Sample2()
 immutableReference.mutableProperty = 1000 // 불변 인스턴스를 만들어도 프로퍼티가 var로 되어있으면 수정 가능하다
 //immutableReference.immutableProperty = 2000
+
+
+
+// MARK: - 구조체와 클래스 비교
+
+struct ValueType {
+    var property: Int = 1
+}
+
+
+
+// 첫 번째 구조체 인스턴스
+let firstStructInstance: ValueType = ValueType()
+// 두 번째 구조체 인스턴스에 첫 번째 인스턴스 값 복사
+var secondStructInstance: ValueType = firstStructInstance
+// 두 번째 구조체 인스턴스 프로퍼티 값 수정
+secondStructInstance.property = 2
+
+// 두 번째 구조체 인스턴스는 첫 번째 구조체를 똑같이 복사한
+// 별도의 인스턴스이기 때문에
+// 두 번째 구조체 인스턴스의 프로퍼티 값을 변경해도
+// 첫 번째 구조체 인스턴스의 프로퍼티 값에는 영향이 없다.
+
+print("firstStructInstance.property: \(firstStructInstance.property)") // 출력: 1
+print("secondStructInstance.property: \(secondStructInstance.property)") // 출력: 2
+
+
+class ReferenceType {
+    var property: Int = 1
+}
+
+// 클래스 인스턴스 생성 후 첫 번째 참조 생성
+let firstClassReference: ReferenceType = ReferenceType()
+// 두번째 참조 변수에 첫 번째 참조 할당
+var secondClassReference: ReferenceType = firstClassReference
+secondClassReference.property = 2
+
+
+// let으로 참조변수 만들게 되면 다른 인스턴스 참조하지 못하고 프로그램이 끝날 때까지 하나의 인스턴스만 가리킬 수 있다.
+// var로 참조변수 만들게 되면 다른 인스턴스 참조로 수정할 수 있다.
+let thirdClassReference: ReferenceType = ReferenceType()
+secondClassReference = thirdClassReference
+// firstClassReference = thirdClassReference // 참조 변수의 주소값은 바꿀 수 없다.
+
+
+// 동일한 메모리를 공유
+// 두 번째 클래스 참조는 첫 번째 클래스 인스턴스를 찹조하기 때문에
+// 두 번째 참조를 통해 인스턴스의 프로퍼티 값을 변경하면
+// 첫 번째 클래스 인스턴스의 프로퍼티 값을 변경하게 된다.
+print("firstClassReference.property: \(firstClassReference.property)")
+print("secondClassReference.property: \(secondClassReference.property)")
