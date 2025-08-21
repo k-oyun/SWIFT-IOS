@@ -8,88 +8,113 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var display: String = "0"
+    @State var display: String = ""
     @State var inputA: String = ""
     @State var inputB: String = ""
+    @State var operatorSign: String = ""
     
     // 버튼 레이블 배열
-    let labels: Array<String> = [
+    let labels: Array<Character> = [
         "7", "8", "9", "/",
         "4", "5", "6", "*",
         "1", "2", "3", "-",
-        "0", ".", "=", "+"
+        "C", "0", "=", "+"
     ]
+    
+    func buttonClicked(_ char: Character) {
+        if inputA == "" {
+            display = ""
+        }
+        switch(char) {
+        case "C" :
+            display = ""
+            clear()
+        case "=" :
+            calculate()
+            clear()
+        case "+", "-", "*", "/" :
+            display.append(contentsOf: String(char))
+            operatorSign = String(char)
+        default :
+            display.append(contentsOf: String(char))
+            if operatorSign.isEmpty {
+                
+                inputA.append(contentsOf: String(char))
+            } else {
+                inputB.append(contentsOf: String(char))
+            }
+                
+        }
+    }
+    
+    func clear() {
+        inputA = ""
+        inputB = ""
+        operatorSign = ""
+    }
+    
+    func calculate() {
+        let a: Int = Int(inputA)!
+        let b: Int = Int(inputB)!
+        var result: Int = 0
+        
+        switch operatorSign {
+        case "+" :
+            result = a + b
+        case "-" :
+            result = a + b
+        case "*" :
+            result = a + b
+        case "/" :
+            result = a + b
+        default:
+            print("???")
+        }
+        
+        display.append("=\(result)")
+        
+    }
 
     var body: some View {
-        VStack {
-            Text(display)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-            
-            
-            
-//            let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-//            
-//            LazyVGrid(columns: columns) {
-//                ForEach(labels, id:\.self) {color in
-//                        Text("텍스트")
-//                }
-//            }
-            let array = Array(repeating: GridItem(.flexible(), spacing:12), count: 4)
-            LazyVGrid(columns: array) {
-                ForEach(labels, id:\.self) {label in
-                    Button(action: {
-                        display += label
-                    }) {
-                        Text(label)
-                            .font(.headline)
-                    }
-                    .buttonStyle(.borderedProminent)
+        NavigationStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    Text(display)
+                        .font(.system(size: 30))
+                        .padding()
+                    
+                    //                    .background(Color.gray.opacity(0.2))
+                    
                 }
+                //            .frame(maxWidth: .infinity, minHeight: 200)
+                
+                Spacer()
+                    .frame(height: 48)
+                
+                let array = Array(repeating: GridItem(.flexible(), spacing:12), count: 4)
+                LazyVGrid(columns: array, spacing: 12) {
+                    ForEach(labels, id:\.self) {label in
+                        Button(action: {
+                            buttonClicked(label)
+                        }) {
+                            Text(String(label))
+                                .font(.system(size: 20))
+                                .frame(maxWidth: .infinity, minHeight: 64)
+                                .background(Color(.systemGray5))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            
+                        }
+                        
+                    }
+                }
+                
             }
+            .padding()
+            .navigationTitle("Calcuator")
             
-//            TextField("Input A", text: $inputA)
-//                .textFieldStyle(.roundedBorder)
-//                .padding()
-//            TextField("Input B", text: $inputB)
-//                .textFieldStyle(.roundedBorder)
-//                .padding()
-//            HStack {
-//                Button("+") {
-//                    let a = Int(inputA)!
-//                    let b = Int(inputB)!
-//                    let displayInt = a + b
-//                    display = String(displayInt)
-//                    
-//                }
-//                .buttonStyle(.borderedProminent)
-//                Button("-") {
-//                    let a = Int(inputA)!
-//                    let b = Int(inputB)!
-//                    let displayInt = a - b
-//                    display = String(displayInt)
-//                    
-//                }
-//                .buttonStyle(.borderedProminent)
-//                Button("*") {
-//                    let a = Int(inputA)!
-//                    let b = Int(inputB)!
-//                    let displayInt = a * b
-//                    display = String(displayInt)
-//                    
-//                }
-//                .buttonStyle(.borderedProminent)
-//                Button("/") {
-//                    let a = Int(inputA)!
-//                    let b = Int(inputB)!
-//                    let displayInt = a / b
-//                    display = String(displayInt)
-//                    
-//                }
-//                .buttonStyle(.borderedProminent)
-//            }
         }
-        .padding()
+        
     }
 }
 
