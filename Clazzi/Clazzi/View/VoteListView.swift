@@ -1,9 +1,3 @@
-//
-//  VoteListView.swift
-//  Clazzi
-//
-//  Created by Admin on 8/26/25.
-//
 
 import SwiftUI
 
@@ -15,7 +9,7 @@ struct VoteListView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(votes, id: \.self) {vote in
-                            VoteCardView(vote: vote)
+                        VoteCardView(vote: vote)
                     }
                 }
                 
