@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct VoteView: View {
     
     // 뒤로 가기
     @Environment(\.dismiss ) private var dismiss
@@ -63,5 +63,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    VoteView()
 }

@@ -11,7 +11,7 @@ import SwiftUI
 struct ClazziApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            VoteListView()
         }
     }
 }
