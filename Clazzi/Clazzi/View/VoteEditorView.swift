@@ -1,14 +1,9 @@
-//
-//  CreateVoteView.swift
-//  Clazzi
-//
-//  Created by wj on 8/26/25.
-//
+
 
 import SwiftUI
 import SwiftData
 
-struct CreateVoteView: View {
+struct VoteEditorView: View {
     // 뒤로 가기(모달(바텀시트) 닫기)
     @Environment(\.dismiss) private var dismiss
     
@@ -99,5 +94,5 @@ struct CreateVoteView: View {
 }
 
 #Preview {
-    CreateVoteView() { _ in }
+    VoteEditorView() { _ in }
 }

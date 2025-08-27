@@ -95,7 +95,7 @@ struct VoteListView: View {
             }
             // 화면 이동 방법2
             .navigationDestination(isPresented: $isPresentingCreate) {
-                CreateVoteView() { vote in
+                VoteEditorView() { vote in
 //                    votes.append(vote)
                     
                     modelContext.insert(vote)
@@ -110,7 +110,7 @@ struct VoteListView: View {
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit{
-                    CreateVoteView(vote: vote) { updatedVote in
+                    VoteEditorView(vote: vote) { updatedVote in
                         do {
                             try modelContext.save()
                         } catch{
