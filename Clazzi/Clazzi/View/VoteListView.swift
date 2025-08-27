@@ -5,11 +5,11 @@ struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
-    
-    @State private var votes = [
-        Vote(title: "첫 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
-        Vote(title: "두 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
-    ]
+//    
+//    @State private var votes = [
+//        Vote(title: "첫 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
+//        Vote(title: "두 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
+//    ]
     
     // 투표 생성 화면
     @State private var isPresentingCreate: Bool = false
@@ -115,7 +115,12 @@ struct VoteListView: View {
             .navigationDestination(isPresented: $isPresentingEdit) {
                 if let vote = voteToEdit, let index = editIndex {
                     CreateVoteView(vote: vote) { updatedVote in
-                        votes[index] = updatedVote
+//                        votes[index] = updatedVote
+                        do {
+                            try modelContext.save()
+                        } catch{
+                            print("수정 실패 \(error)")
+                        }
                     }
                 }
             }
@@ -130,7 +135,13 @@ struct VoteListView: View {
 //                    let a: Int? = votes.firstIndex(where: { $0.id == voteToDelete!.id})
                     
                     if let target = voteToDelete, let index = votes.firstIndex(where: { $0.id == target.id }) {
-                        votes.remove(at: index)
+//                        votes.remove(at: index)
+                        modelContext.delete(target)
+                        do {
+                            try modelContext.save()
+                        } catch{
+                            print("삭제 실패 \(error)")
+                        }
                     }
                 }
                 Button("취소", role: .cancel) {}
