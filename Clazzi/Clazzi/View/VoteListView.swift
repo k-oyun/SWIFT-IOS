@@ -127,19 +127,20 @@ struct VoteListView: View {
             // 삭제 알러트
             .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
                 Button("삭제", role: .destructive) {
-//                    let a: Int? = votes.firstIndex(where: { $0.id == voteToDelete!.id})
                     
-                    if let target = voteToDelete, let index = votes.firstIndex(where: { $0.id == target.id }) {
-//                        votes.remove(at: index)
+                    if let target = voteToDelete {
                         modelContext.delete(target)
                         do {
                             try modelContext.save()
+                            voteToDelete = nil // 삭제 후 상태 초기화
                         } catch{
                             print("삭제 실패 \(error)")
                         }
                     }
                 }
-                Button("취소", role: .cancel) {}
+                Button("취소", role: .cancel) {
+                    voteToDelete = nil
+                }
             } message: {
                 if let target = voteToDelete {
                     Text("'\(target.title)' 투표가 삭제됩니다.")
@@ -183,7 +184,7 @@ struct VoteCardView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.gray)
+        .background(.blue)
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.2),radius: 4, x: 0, y: 2)
         
