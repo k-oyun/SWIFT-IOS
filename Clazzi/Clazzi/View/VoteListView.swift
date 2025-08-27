@@ -22,7 +22,6 @@ struct VoteListView: View {
     
     //투표 수정 관련
     @State private var voteToEdit: Vote? = nil
-    @State private var editIndex: Int? = nil
     
     var body: some View {
         NavigationStack {
@@ -44,16 +43,13 @@ struct VoteListView: View {
             ZStack{
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        ForEach(votes.indices, id: \.self) {index in
-                            let vote = votes[index]
+                        ForEach(votes) {vote in
                             NavigationLink(destination: VoteView(vote: vote)) {
                                 VoteCardView(vote: vote) {
                                     voteToDelete = vote
                                     showDeleteAlert = true
-//                                    votes.remove(at: index)
                                 } onEdit: {
                                     voteToEdit = vote
-                                    editIndex = index
                                     isPresentingEdit = true
                                 }
                             }
@@ -113,9 +109,8 @@ struct VoteListView: View {
             }
             // 수정화면 띄우기
             .navigationDestination(isPresented: $isPresentingEdit) {
-                if let vote = voteToEdit, let index = editIndex {
+                if let vote = voteToEdit{
                     CreateVoteView(vote: vote) { updatedVote in
-//                        votes[index] = updatedVote
                         do {
                             try modelContext.save()
                         } catch{

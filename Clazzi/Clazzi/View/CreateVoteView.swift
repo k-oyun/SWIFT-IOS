@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CreateVoteView: View {
     // 뒤로 가기(모달(바텀시트) 닫기)
@@ -65,14 +66,23 @@ struct CreateVoteView: View {
                     }
                 .navigationTitle(Text("투표\(existingVote == nil ? "생성" : "수정") 화면"))
 
-                // 생성하기 버튼
+                // 생성, 수정하기 버튼
                 Button(action: {
-                    let newOptions = options.map {
-                        VoteOption(name: $0)
+                    if let vote = existingVote {
+                        // 기존 객체를 직접 수정
+                        vote.title = title
+                        
+                        // 기존 옵션 삭제 후 새로 생성
+                        vote.options = options.map {
+                            VoteOption(name: $0)
+                        }
+                        onSave(vote)
                     }
-                    let vote = Vote(title: title, options: newOptions)
-//                    let vote = Vote(title: title, options: options)
-                    onSave(vote)
+                    else {
+                        // 새 객체 생성
+                        let newVote = Vote(title: title, options: options.map {VoteOption(name: $0)})
+                        onSave(newVote)
+                    }
                     dismiss()
                 }) {
                     Text(existingVote == nil ? "생성하기" : "수정하기")
