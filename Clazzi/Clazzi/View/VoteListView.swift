@@ -1,8 +1,11 @@
 
 import SwiftUI
-
+import SwiftData
 struct VoteListView: View {
-//    let votes = ["첫 번째 투표", "두 번째 투표", "세 번째 투표"]
+    @Environment(\.modelContext) private var modelContext
+    
+    @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
+    
     @State private var votes = [
         Vote(title: "첫 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
         Vote(title: "두 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
@@ -97,7 +100,15 @@ struct VoteListView: View {
             // 화면 이동 방법2
             .navigationDestination(isPresented: $isPresentingCreate) {
                 CreateVoteView() { vote in
-                    votes.append(vote)
+//                    votes.append(vote)
+                    
+                    modelContext.insert(vote)
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("저장 실패: \(error)")
+                    }
+                    
                 }
             }
             // 수정화면 띄우기

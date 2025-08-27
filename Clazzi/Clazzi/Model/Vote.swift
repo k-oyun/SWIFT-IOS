@@ -1,9 +1,16 @@
 
 
 import Foundation
+import SwiftData
 
-struct Vote: Identifiable {
+@Model
+class Vote: Identifiable {
     var id = UUID()
-    let title: String
-    let options: [String]
+    var title: String
+    var options: [String]
+    
+    init(title: String, options: [String]) {
+        self.title = title
+        self.options = options
+    }
 }
