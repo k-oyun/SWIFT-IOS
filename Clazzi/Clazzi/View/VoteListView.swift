@@ -2,8 +2,11 @@
 import SwiftUI
 
 struct VoteListView: View {
-    let votes = ["첫 번째 투표", "두 번째 투표", "세 번째 투표"]
-    
+//    let votes = ["첫 번째 투표", "두 번째 투표", "세 번째 투표"]
+    @State private var votes = [
+        Vote(title: "첫 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
+        Vote(title: "두 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
+    ]
     @State private var isPresentingCreate: Bool = false
     
     var body: some View {
@@ -11,8 +14,10 @@ struct VoteListView: View {
             ZStack{
                 ScrollView {
                     LazyVStack {
-                        ForEach(votes, id: \.self) {vote in
-                            VoteCardView(vote: vote)
+                        ForEach(votes) {vote in
+                            NavigationLink(destination: VoteView(vote: vote)) {
+                                VoteCardView(vote: vote)
+                            }
                         }
                     }
                 }
@@ -55,7 +60,9 @@ struct VoteListView: View {
                 }
             }
             .navigationDestination(isPresented: $isPresentingCreate) {
-                CreateVoteView()
+                CreateVoteView() { vote in
+                    votes.append(vote)
+                }
             }
             //            .sheet(isPresented: $isPresentingCreate) {
             //                CreateVoteView()
@@ -66,11 +73,11 @@ struct VoteListView: View {
 }
 
 struct VoteCardView: View {
-    let vote: String
+    let vote: Vote
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(vote)
+            Text(vote.title)
                 .font(.headline)
                 .foregroundColor(.white)
             Text("투표 항목 보기")
