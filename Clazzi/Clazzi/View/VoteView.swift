@@ -53,7 +53,7 @@ struct VoteView: View {
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                        
+                    
                 }
             }
             .padding()
