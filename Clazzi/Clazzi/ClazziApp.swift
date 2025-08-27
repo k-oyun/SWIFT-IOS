@@ -23,7 +23,7 @@ struct ClazziApp: App {
     }()
     var body: some Scene {
         WindowGroup {
-            VoteListView()
+            AuthView()
         }
         .modelContainer(sharedModelContainer)
     }

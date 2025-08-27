@@ -5,12 +5,7 @@ struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
-//    
-//    @State private var votes = [
-//        Vote(title: "첫 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
-//        Vote(title: "두 번째 투표", options: ["옵션 1","옵션 2","옵션 3"]),
-//    ]
-    
+
     // 투표 생성 화면
     @State private var isPresentingCreate: Bool = false
     // 투표 수정 관련
