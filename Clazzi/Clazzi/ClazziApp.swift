@@ -7,11 +7,17 @@
 
 import SwiftUI
 import SwiftData
+
 @main
 struct ClazziApp: App {
-    
     // 로그인 상태
-    @State var isLoggedIn: Bool = false
+    @State var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    @State var currentUserID: UUID? = {
+        if let idString = UserDefaults.standard.string(forKey: "currentUserID"), let id = UUID(uuidString: idString) {
+            return id
+        }
+        return nil
+    } ()
     
     // 스위프트 데이터 컨테이너
     var sharedModelContainer: ModelContainer = {
@@ -20,20 +26,20 @@ struct ClazziApp: App {
             VoteOption.self,
             User.self
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false) // true로 하면 휘발성으로 메모리에 저장댐
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("모델 컨테이너를 생성하지 못하였습니다. \(error)")
         }
     }()
+    
     var body: some Scene {
         WindowGroup {
-            if isLoggedIn {
-                VoteListView(isLoggedIn: $isLoggedIn)
-            }
-            else {
-                AuthView(isLoggedIn: $isLoggedIn)
+            if currentUserID == nil {
+                AuthView(currentUserID: $currentUserID)
+            } else {
+                VoteListView(currentUserID: $currentUserID)
             }
         }
         .modelContainer(sharedModelContainer)

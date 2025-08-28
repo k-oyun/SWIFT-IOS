@@ -4,7 +4,7 @@ import SwiftData
 struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @Binding var isLoggedIn: Bool
+    @Binding var currentUserID: UUID?
     
     @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
 
@@ -41,7 +41,7 @@ struct VoteListView: View {
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         ForEach(votes) {vote in
-                            NavigationLink(destination: VoteView(vote: vote)) {
+                            NavigationLink(destination: VoteView(vote: vote, currentUserID: $currentUserID)) {
                                 VoteCardView(vote: vote) {
                                     voteToDelete = vote
                                     showDeleteAlert = true
@@ -90,7 +90,7 @@ struct VoteListView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: MypageView(isLoggedIn: $isLoggedIn)) {
+                    NavigationLink(destination: MypageView(currentUserID: $currentUserID)) {
                         Image(systemName: "person")
                     }
                 }
@@ -196,3 +196,41 @@ struct VoteCardView: View {
 //#Preview {
 //    VoteListView()
 //}
+
+
+struct VoteListView_Previews: PreviewProvider {
+    struct Wrapper: View {
+        @State var currentUserID: UUID? = UUID(uuidString: "가짜 UUID")
+        
+        let container: ModelContainer = {
+            let schema = Schema([Vote.self, VoteOption.self])
+            let config = ModelConfiguration(isStoredInMemoryOnly: true)
+            let container = try! ModelContainer(
+                for: schema, configurations: [config]
+            )
+            
+            let context = container.mainContext
+            
+            let sampleVote1 = Vote(title: "샘플 투표 1", options: [
+                VoteOption(name: "A"),
+                VoteOption(name: "B"),
+            ])
+            let sampleVote2 = Vote(title: "샘플 투표 2", options: [
+                VoteOption(name: "X"),
+                VoteOption(name: "Y"),
+            ])
+            context.insert(sampleVote1)
+            context.insert(sampleVote2)
+            return container
+            
+            
+        }()
+        var body: some View {
+            VoteListView(currentUserID: $currentUserID)
+                .modelContainer(container)
+        }
+    }
+    static var previews: some View {
+        Wrapper()
+    }
+}
