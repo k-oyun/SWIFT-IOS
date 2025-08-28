@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AuthView: View {
     @Environment(\.modelContext) private var
         modelContext
     
+    @Binding var isLoggedIn: Bool
+    @Query var users: [User]
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isPrivacyAgreed: Bool = false
@@ -96,14 +99,25 @@ struct AuthView: View {
                 
                 
                 Button(action: {
-                    let newUser = User(email: email, password: password)
-                    modelContext.insert(newUser)
-                    do {
-                        try modelContext.save()
-                        print("회원가입 성공")
-                    } catch {
-                        print("회원가입 실패")
+                    if isLogin {
+                        if let currentUserIndex = users.firstIndex(where: {
+                            $0.email == email && $0.password == password
+                        }) {
+                            print("로그인 성공")
+                            isLoggedIn = true
+                        }
+                    } else {
+                        let newUser = User(email: email, password: password)
+                        modelContext.insert(newUser)
+                        do {
+                            try modelContext.save()
+                            print("회원가입 성공")
+                            isLoggedIn = true
+                        } catch {
+                            print("회원가입 실패")
+                        }
                     }
+                    
                 }) {
                     Text(isLogin ? "로그인" : "가입하기")
                         .frame(maxWidth: .infinity)
@@ -131,6 +145,6 @@ struct AuthView: View {
     }
 }
 
-#Preview {
-    AuthView()
-}
+//#Preview {
+//    AuthView(isLoggedIn)
+//}

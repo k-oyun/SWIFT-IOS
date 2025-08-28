@@ -4,6 +4,8 @@ import SwiftData
 struct VoteListView: View {
     @Environment(\.modelContext) private var modelContext
     
+    @Binding var isLoggedIn: Bool
+    
     @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
 
     // 투표 생성 화면
@@ -85,6 +87,11 @@ struct VoteListView: View {
                     }
                     ) {
                         Image(systemName: "plus")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: MypageView(isLoggedIn: $isLoggedIn)) {
+                        Image(systemName: "person")
                     }
                 }
             }
@@ -186,6 +193,6 @@ struct VoteCardView: View {
     }
 }
 
-#Preview {
-    VoteListView()
-}
+//#Preview {
+//    VoteListView()
+//}
