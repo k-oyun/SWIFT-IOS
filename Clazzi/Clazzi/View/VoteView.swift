@@ -10,6 +10,7 @@ import SwiftUI
 struct VoteView: View {
     // 뒤로 가기
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     
     @State private var selectedOption: Int = 0
     
@@ -17,7 +18,7 @@ struct VoteView: View {
     
     @Binding var currentUserID: UUID?
     
-    // 현재 유저가 이미 투표 했는지
+    // 현재 유저가 이미 투표했는지 확인
     private var hasVoted: Bool {
         vote.options.contains(where: { $0.voters.contains(currentUserID ?? UUID()) })
     }
@@ -39,6 +40,15 @@ struct VoteView: View {
                             Text(vote.options[index].name)
                             Spacer()
                             Text("\(vote.options[index].votes)")
+                            
+                            //이미 투표한 경우
+                           
+                            if vote.options[index].voters.first(where: {$0 ==
+                                currentUserID}) != nil {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.yellow)
+                            }
+                            
                         }
                         .padding(.horizontal, 20)
                         .frame(maxWidth: 200)
@@ -49,15 +59,26 @@ struct VoteView: View {
                     }
                     .disabled(hasVoted)
                 }
-               
+                
                 Spacer()
                 
                 // 투표하기
                 Button(action: {
-                    print("투표 항목은 \(vote.options[selectedOption])입니다.")
-                    if let currentUserID = currentUserID {
-                        vote.options[selectedOption].voters.append(currentUserID)
+                    guard let currentUserID = currentUserID, !hasVoted else {
+                        print("이미 투표했거나 유저ID가 없습니다.")
+                        return
                     }
+                    print("투표 항목은 \(vote.options[selectedOption])입니다.")
+                    
+                    // 투표 데이터 업데이트
+                    vote.options[selectedOption].voters.append(currentUserID)
+                    do {
+                        try modelContext.save()
+                        print("투표 저장 성공: \(vote.options[selectedOption].name)")
+                    } catch {
+                        print("투표 저장 실패: \(error)")
+                    }
+                    
                 }) {
                     Text("투표하기")
                         .frame(maxWidth: .infinity)
@@ -65,7 +86,7 @@ struct VoteView: View {
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-                        
+                    
                 }
                 .disabled(hasVoted)
             }
