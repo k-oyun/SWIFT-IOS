@@ -1,15 +1,14 @@
 
-
 import Foundation
 import SwiftData
 
-@Model
-final class Vote: Identifiable {
+@Model // 스위프트 데이타에서 사용할 수 있는 모델로 바꿔주는 어트리뷰트
+class Vote {
     var id: UUID
     var title: String
     @Relationship(deleteRule: .cascade)
     var options: [VoteOption]
-    
+
     init(title: String, options: [VoteOption] = []) {
         self.id = UUID()
         self.title = title
@@ -17,16 +16,16 @@ final class Vote: Identifiable {
     }
 }
 
-
 @Model
 class VoteOption {
     var name: String
-    var voters: [UUID]  = [] // 여기에 투표자 ID저장
+    var voters: [UUID] = [] // 여기에 투표자 ID 저장
+
     init(name: String) {
         self.name = name
     }
     
-    // 해당 투표 항목에 투표자가 몇 명 있는지?
+    // 해당 투표 항목에 투표자가 몇 명 있는지 : 투표수
     var votes: Int {
         voters.count
     }

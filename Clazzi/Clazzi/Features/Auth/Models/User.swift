@@ -1,9 +1,3 @@
-//
-//  User.swift
-//  Clazzi
-//
-//  Created by Admin on 8/28/25.
-//
 
 import Foundation
 import SwiftData
