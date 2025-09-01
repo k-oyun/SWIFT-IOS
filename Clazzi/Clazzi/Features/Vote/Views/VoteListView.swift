@@ -113,7 +113,7 @@ struct VoteCardView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.gray)
+        .background(.blue)
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
     }
@@ -130,7 +130,7 @@ struct VoteCardView: View {
     let context = container.mainContext
     context.insert(Vote(title: "SwiftUI 공부하기"))
     context.insert(Vote(title: "Firebase vs SwiftData"))
-    context.insert(Vote(title: "점심 메뉴 정하기"))
+    context.insert(Vote(title: "점심 메뉴 정하기", options: [VoteOption(name:"샐러드"), VoteOption(name:"쌈"), VoteOption(name:"볶음밥")]))
     
     // 3. 뷰에 컨테이너 주입
     return VoteListView(currentUserID: .constant(UUID()))
