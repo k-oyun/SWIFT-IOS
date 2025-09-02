@@ -9,7 +9,7 @@ struct Vote: Identifiable, Codable {
     var createdBy: String
     var createdAt: Date
     var options: [VoteOption]
-    var imageURL: String? = nil
+    var imageURL: String?
 
     init(title: String, createdBy: String, options: [VoteOption] = [], imageURL: String? = nil) {
         self.id = nil
@@ -27,9 +27,10 @@ struct VoteOption: Identifiable, Codable {
     var name: String
     var voters: [String] = [] // 여기에 투표자 ID 저장
 
-    init(name: String) {
+    init(name: String, voters: [String] = []) {
         self.id = nil
         self.name = name
+        self.voters = voters
     }
     
    
