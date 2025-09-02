@@ -142,10 +142,12 @@ struct AuthView: View {
         isLoading = true
         do {
             if isLogin { // 로그인 일 때
+                // Auth.auth().signIn : 파이어베이스 로그인
                 _ = try await Auth.auth().signIn(withEmail: email,
                                                  password: password)
                 print("Firebase 로그인 성공")
             } else { // 회원가입 일 때
+                // Auth.auth().createUser : 파이어베이스 회원가입
                 _ = try await Auth.auth().createUser(withEmail: email,
                                                      password: password)
                 print("Firebase 회원가입 성공")

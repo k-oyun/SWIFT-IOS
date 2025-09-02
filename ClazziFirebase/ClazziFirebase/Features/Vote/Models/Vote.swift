@@ -2,7 +2,7 @@
 import Foundation
 import FirebaseFirestore
 
-
+// Codable: 제이슨 데이터를 스위프트 모델로 자동 변환할 때 사용하는 프로토콜
 struct Vote: Identifiable, Codable {
     @DocumentID var id: String?
     var title: String

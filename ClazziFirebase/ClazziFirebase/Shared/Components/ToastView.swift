@@ -11,6 +11,7 @@ enum ToastPosition {
     case top, middle, bottom
 }
 
+// 커스텀 뷰 만드는 이유: 재사용성
 struct ToastView: View {
     let message: String
     var position: ToastPosition = .bottom   // 기본값 bottom

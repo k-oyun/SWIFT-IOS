@@ -5,6 +5,7 @@ import FirebaseAuth
 
 struct VoteListView: View {
     @EnvironmentObject var session: UserSession
+    // 뷰모델: ObservableObject -> 초기화 "@StateObject" 뷰모델
     @StateObject private var voteViewModel = VoteViewModel()
     
     
@@ -17,6 +18,7 @@ struct VoteListView: View {
     @State private var voteToEdit: Vote? = nil
     
     var body: some View {
+        // 아이패드 대응 네비게이션: NavigationSplitView
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 16) {

@@ -3,8 +3,10 @@ import SwiftUI
 import SwiftData
 
 struct VoteView: View {
+    // @EnvironmentObject: 전역으로 관리하는 커스텀 객체
     @EnvironmentObject var session: UserSession
     // 뒤로 가기
+    // @Environment: 시스템에서 가져옴
     @Environment(\.dismiss) private var dismiss
     
     @State private var selectedOption: Int = 0

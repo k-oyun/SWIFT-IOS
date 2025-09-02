@@ -67,8 +67,8 @@ struct VoteEditorView: View {
                             .padding(.bottom, 32)
                             Text("투표 항목")
                                 .font(.headline)
-                            
-                            
+                            let aa = [0, 1, 2, 3]
+                            // ForEach에서 id를 쓰는 이유: SwiftUI가 뷰를 구분하기 위해
                             ForEach(options.indices, id: \.self) { index in
                                 HStack{
                                     TextField("항목 \(index + 1)", text: $options[index])
