@@ -3,19 +3,19 @@ import SwiftUI
 import SwiftData
 
 struct VoteView: View {
+    @EnvironmentObject var session: UserSession
     // 뒤로 가기
     @Environment(\.dismiss) private var dismiss
     
     @State private var selectedOption: Int = 0
     
-    var vote: Vote
+    @State var vote: Vote
     
-    @Binding var currentUserID: UUID?
     
     // 현재 유저가 이미 투표했는지 확인
     private var hasVoted: Bool {
-        guard let userID = currentUserID else { return false } // 현재 유저가 nil인지 아닌지 (로그인했는지 안했는지)
-        return vote.options.contains { $0.voters.contains(userID) }
+        guard let user = session.user else { return false } // 현재 유저가 nil인지 아닌지 (로그인했는지 안했는지)
+        return vote.options.contains { $0.voters.contains(user.uid) }
         // 내 아이디가 있는지 있으면 true 반환 -> 여러 옵션들이 $0으로 들어가서 순회 함
         // option1-> voters
         // option2-> voters
@@ -25,6 +25,8 @@ struct VoteView: View {
     
     // 토스트 메세지
     @State private var toastMessage: String? = nil
+    
+    var onVote: (Vote) -> Void
     
     var body: some View {
         NavigationStack {
@@ -47,12 +49,13 @@ struct VoteView: View {
                                 Spacer()
                                 
                                 // 이미 투표한 경우 표시
-                                if let currentUserID = currentUserID, vote.options[index].voters.contains(currentUserID) {
+                                if let user = session.user,
+                                   vote.options[index].voters.contains(user.uid) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.white)
                                 }
                                 
-                                Text("\(vote.options[index].votes)")
+                                Text("\(vote.options[index].voters.count)")
                             }
                             .padding(.horizontal)
                             .frame(maxWidth: 200)
@@ -68,9 +71,7 @@ struct VoteView: View {
                     
                     // 투표하기
                     Button(action: {
-                        guard let currentUserID = currentUserID, !hasVoted else {
-                            print("이미 투표했거나 유저 ID가 없습니다.")
-                            
+                        guard let user = session.user, !hasVoted else {
                             // 토스트 노출
                             toastMessage = "이미 투표했거나 유저 ID가 없습니다."
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -83,7 +84,9 @@ struct VoteView: View {
                         }
                         
                         // 투표 데이터 업데이트
-                        vote.options[selectedOption].voters.append(currentUserID)
+//                        var vote = self.vote
+                        vote.options[selectedOption].voters.append(user.uid)
+                        onVote(vote)
                     }) {
                         Text("투표하기")
                             .frame(maxWidth: .infinity)
@@ -92,12 +95,11 @@ struct VoteView: View {
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    //                .disabled(hasVoted)
-                    
+                                    .disabled(hasVoted)
                 }
                 
                 if let toastMessage = toastMessage {
-                    ToastView(message: toastMessage)   
+                    ToastView(message: toastMessage)
                 }
             }
             .padding()
@@ -106,23 +108,23 @@ struct VoteView: View {
     }
 }
 
-#Preview {
-    // 가짜 사용자 로그인 상태
-    @Previewable @State var currentUserID: UUID? = UUID()
-    
-    // 1. 프리뷰 전용 inMemory 컨테이너 생성
-    let container = try! ModelContainer(
-        for: Vote.self, VoteOption.self,
-        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-    )
-    // 2. 샘플 투표 생성
-    let sampleVote = Vote(title: "샘플 투표", options: [
-        VoteOption(name: "옵션 1"),
-        VoteOption(name: "옵션 2")
-    ])
-    // 3. 샘플 투표 삽입
-    container.mainContext.insert(sampleVote)
-    // 4. 뷰에 컨테이너 주입
-    return VoteView(vote: sampleVote, currentUserID: $currentUserID)
-        .modelContainer(container)
-}
+//#Preview {
+//    // 가짜 사용자 로그인 상태
+//    @Previewable @State var currentUserID: UUID? = UUID()
+//
+//    // 1. 프리뷰 전용 inMemory 컨테이너 생성
+//    let container = try! ModelContainer(
+//        for: Vote.self, VoteOption.self,
+//        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+//    )
+//    // 2. 샘플 투표 생성
+//    let sampleVote = Vote(title: "샘플 투표", options: [
+//        VoteOption(name: "옵션 1"),
+//        VoteOption(name: "옵션 2")
+//    ])
+//    // 3. 샘플 투표 삽입
+//    container.mainContext.insert(sampleVote)
+//    // 4. 뷰에 컨테이너 주입
+//    return VoteView(vote: sampleVote, currentUserID: $currentUserID)
+//        .modelContainer(container)
+//}

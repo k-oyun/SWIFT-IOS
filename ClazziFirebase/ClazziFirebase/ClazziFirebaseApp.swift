@@ -25,13 +25,13 @@ struct ClazziFirebaseApp: App {
                     VoteListView()
                 }
             }
-            .environmentObject(session) // 전역으로 사용자 세션을 이용할 수 있게
             .onAppear {
                 Task {
-                    try await Task.sleep(nanoseconds: 2_000_000_000)
-                    isLoading = false 
+                    try await Task.sleep(seconds: 2)
+                    isLoading = false
                 }
             }
+            .environmentObject(session) // 전역으로 사용자 세션을 이용할 수 있게
         }
     }
 }
